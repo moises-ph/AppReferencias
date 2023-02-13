@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import RefForm from './components/RefForm';
+import References from './components/References';
 
 function App() {
+  const [Referencias, setRefs] = useState([]);
+
+  const makeReferences = (e)=>{
+    e.preventDefault();
+    console.log(e.target.name.value);    
+    setRefs([...Referencias, "Hola"]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1 className='text-4xl text-center font-normal leading-normal mt-0 mb-2 text-slate-800'>Aplicacion para hacer Referencias de Articulos</h1>
+      <h2 className='text-3xl text-center font-normal leading-normal mt-0 mb-2 text-slate-800'>Ñe</h2>
+      <div className='flex flex-row'>
+        <RefForm formHandler={makeReferences} />
+        <References Refs={Referencias}/>
+      </div>
+    </>
   );
 }
 
