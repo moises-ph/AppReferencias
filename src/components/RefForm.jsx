@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 
 function RefForm(props) {
 
     const [numAutores, setAutores] = useState(1);
     const [AutorsControls, setControls] = useState([]);
+    const Form = useRef(null);
 
     const renderAutorsControls = () =>{
         let inputs = [];
@@ -12,7 +13,7 @@ function RefForm(props) {
                 <>
                     <div className='flex flex-wrap -mx-3 mb-6'>
                         <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
-                            <label htmlFor={'name' + i} className='block text-gray-700 text-sm font-bold mb-2'>Inicial del Autor {i + 1}</label>
+                            <label htmlFor={'Autorname' + i} className='block text-gray-700 text-sm font-bold mb-2'>Inicial del Autor {i + 1}</label>
                             <input id={'AutorName' + i} className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' placeholder='Inicial del autor' type='text'  required/>
                         </div>
                         <div className='w-full md:w-1/2 px-3'>
@@ -27,9 +28,16 @@ function RefForm(props) {
     }
 
     const formInternHandler = (e)=>{
+        e.preventDefault();
+        let Autores = [];
+        for(let i = 0; i < numAutores; i++){
+            Autores.push({
+                AuthName : e.target['AutorName' + i].value,
+                AutorLastname : e.target['lastname' + i].value
+            });
+        };
         let tempRef = {
-            AuthName : e.target.name.value,
-            AutorLastname : e.target.lastname.value,
+            Autores,
             Year : e.target.year.value,
             Vol : e.target.vol.value,
             ArtName : e.target.ArtName.value,
@@ -38,7 +46,9 @@ function RefForm(props) {
             EndPage : e.target.page2.value,
             Url : e.target.url.value
         };
-        props.formHandler(e);
+        props.formHandler(tempRef);
+        Form.current.reset();
+        setAutores(1);
     }
 
     useEffect(()=>{
@@ -48,12 +58,14 @@ function RefForm(props) {
     return (
     <>
         <div className='w-full max-w-lg'>
-            <form className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4' onSubmit={formInternHandler}>
+            <form ref={Form} className='bg-rose-100 shadow-md rounded px-8 pt-6 pb-8 mb-4 mr-4' onSubmit={formInternHandler}>
                 <div className='flex flex-col -mx-3 mb-6'>
                     <label htmlFor='numAutores' className='block text-gray-700 text-sm font-bold mb-2'>Numero de Autores</label>
                     <input type='number' id='numAutores' className='shadow appearance-none border rounded w-1/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' placeholder='Numero de autores' defaultValue={1} onChange={(e) => e.target.value > 0 ? setAutores(e.target.value) : e.target.value = 1}/>
                 </div>
-                {AutorsControls.map(value => <>{value}</>)}
+                <div id='autrosGroup'>
+                    {AutorsControls.map(value => <>{value}</>)}
+                </div>
                 <div className='flex flex-wrap -mx-4 mb-6 items-end'>
                     <div className='w-full md:w-1/2 px-3 mb-6 md:mb-0'>
                         <label htmlFor='year' className='block text-gray-700 text-sm font-bold mb-2'>Año de publicación</label>
